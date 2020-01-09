@@ -1,0 +1,18 @@
+{
+    "name": "awinTest",
+    "description": "Transaction Report",
+    "type": "PHP",
+    "require": {
+        "php": "7.3.*",
+        "phpspec/phpspec": "~3.0",
+        "phplucidframe/console-table": "^1.2"
+    },
+    "autoload": {
+        "psr-4": {
+            "Awin\\": "src/"
+        }
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^7"
+    }
+}

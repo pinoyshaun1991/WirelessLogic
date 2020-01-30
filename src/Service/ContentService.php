@@ -1,36 +1,37 @@
 <?php
  namespace WL\Service;
 
- use Goutte\Client;
  use WL\Common\Service\ScrapeService;
 
  /**
-  * Web service returning web page content
+  * Service returning web page content
   *
-  * Class CurrencyWebservice
-  * @package Service
+  * Class ContentService
+  * @package WL\Service
   */
 class ContentService extends ScrapeService
 {
+    public $responseArray = array(
+        'optionTitle' => 'section .header',
+        'description' => 'section .package-name',
+        'price'       => 'section .price-big',
+        'discount'    => 'section .package-price p'
+    );
 
     /**
      * Get the contents of web page via scraping
      *
      * @param $site
-     * @return string
+     * @return array
      */
     public function getContent($site)
     {
-        $site = 'https://videx.comesconnected.com/';
-        $client = new Client();
-        $crawler = $client->request('GET', $site);
+        $response = array();
 
-        $crawler->filter('h2 > a')->each(function ($node) {
-            print $node->text()."\n";
-        });
-        $response     = $this->sendRequest('http://exchangerate.com/api', array('value' => $currency), 'post');
-        $returnString = money_format("%i", $response);
+        foreach ($this->responseArray as $key => $selector) {
+            $response = $this->getContents($site, $selector, $key);
+        }
 
-        return str_replace('GBP', '(GBP) £', $returnString);
+        return $response;
     }
 }

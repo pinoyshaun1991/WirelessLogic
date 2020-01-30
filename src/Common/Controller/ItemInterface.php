@@ -15,5 +15,4 @@ interface ItemInterface
      * @return mixed
      */
     public function getItems();
-    
 }

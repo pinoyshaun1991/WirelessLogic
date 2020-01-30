@@ -1,187 +1,272 @@
 <?php
 
 use PHPUnit\Framework\TestCase;
-use Awin\Model\TransactionTableModel;
+use WL\Model\ItemModel;
 
-class TransactionTableModelTest extends TestCase
+class ItemModelTest extends TestCase
 {
 
-    private $returnedTransactionArray = array(
+    private $returnedItemsArray = array(
         array(
-            'merchant' => 1,
-            'date'     => '01/01/2020',
-            'value'    => '(GBP) £2500'
+            'optionTitle' => 'Option 3600 Mins',
+            'description' => 'Up to 3600 minutes talk time per year including 480 SMS(5p / minute and 4p / SMS thereafter)',
+            'price'       => '174',
+            'discount'    => 'Save £18 on the monthly price'
+        ),
+        array
+        (
+            'optionTitle' => 'Option 2000 Mins',
+            'description' => 'Up to 2000 minutes talk time per year including 420 SMS(5p / minute and 4p / SMS thereafter)',
+            'price'       => '108',
+            'discount'    => 'Save £12 on the monthly price'
+        ),
+        array
+        (
+            'optionTitle' => 'Option 480 Mins',
+            'description' => 'Up to 480 minutes talk time per yearincluding 240 SMS(5p / minute and 4p / SMS thereafter)',
+            'price'       => '66',
+            'discount'    => 'Save £5 on the monthly price'
+        ),
+        array
+        (
+            'optionTitle' => 'Option 300 Mins',
+            'description' => '300 minutes talk time per monthincluding 40 SMS(5p / minute and 4p / SMS thereafter)',
+            'price'       => '16',
+            'discount'    => ''
+        ),
+        array
+        (
+            'optionTitle' => 'Option 160 Mins',
+            'description' => 'Up to 160 minutes talk time per monthincluding 35 SMS(5p / minute and 4p / SMS thereafter)',
+            'price'       => '10',
+            'discount'    => ''
+        ),
+        array
+        (
+            'optionTitle' => 'Option 40 Mins',
+            'description' => 'Up to 40 minutes talk time per monthincluding 20 SMS(5p / minute and 4p / SMS thereafter)',
+            'price'       => '6',
+            'discount'    => ''
         )
     );
 
     /**
-     * @dataProvider merchantProvider
+     * @dataProvider optionTitleProvider
      *
      * @param $parameter
      * @param $expectedMessage
      * @throws ReflectionException
      */
-    public function testSetMerchant($parameter, $expectedMessage): void
+    public function testSetOptionTitle($parameter, $expectedMessage): void
     {
-        $reflector = new \ReflectionClass(TransactionTableModel::class);
+        $reflector = new \ReflectionClass(ItemModel::class);
         $instance  = $reflector->newInstanceWithoutConstructor();
-        $method    = $reflector->getMethod('setMerchant');
+        $method    = $reflector->getMethod('setOptionTitle');
         $method->setAccessible(true);
         $this->expectExceptionMessage($expectedMessage);
         $method->invoke($instance, $parameter);
     }
 
-    public function merchantProvider()
+    public function optionTitleProvider()
     {
         return [
-            ['Testing', 'Merchant is required and needs to be a positive number'],
-            ['', 'Merchant is required and needs to be a positive number'],
-            [array(), 'Merchant is required and needs to be a positive number'],
-            [-12, 'Merchant is required and needs to be a positive number']
+            [null, 'Option title is required']
         ];
     }
 
     /**
-     * @dataProvider merchantWithoutExceptionProvider
+     * @dataProvider optionTitleWithoutExceptionProvider
      *
      * @param $parameter
      * @param $expected
      * @throws Exception
      */
-    public function testSetMerchantWithoutException($parameter, $expected): void
+    public function testSetOptionTitleWithoutException($parameter, $expected): void
     {
-        $reflector = new \ReflectionClass(TransactionTableModel::class);
+        $reflector = new \ReflectionClass(ItemModel::class);
         $instance  = $reflector->newInstanceWithoutConstructor();
-        $method    = $reflector->getMethod('setMerchant');
+        $method    = $reflector->getMethod('setOptionTitle');
         $method->setAccessible(true);
 
         $this->assertEquals($expected, $method->invoke($instance, $parameter));
     }
 
-    public function merchantWithoutExceptionProvider()
+    public function optionTitleWithoutExceptionProvider()
     {
         return [
-            [2, 2],
-            [3, 3],
+            ['test', 'test'],
+            ['Title', 'Title'],
             [10, 10],
             [100, 100]
         ];
     }
 
-    public function testGetMerchant(): void
+    public function testGetOptionTitle(): void
     {
-        $mockedClass = $this->createMock(TransactionTableModel::class);
-        $mockedClass->method('getMerchant')
-            ->willReturn(1);
-        $this->assertEquals(1, $mockedClass->getMerchant());
+        $mockedClass = $this->createMock(ItemModel::class);
+        $mockedClass->method('getOptionTitle')
+            ->willReturn('Test');
+        $this->assertEquals('Test', $mockedClass->getOptionTitle());
     }
 
     /**
-     * @dataProvider dateProvider
+     * @dataProvider descriptionProvider
      *
      * @param $parameter
      * @param $expectedMessage
      * @throws ReflectionException
      */
-    public function testSetDate($parameter, $expectedMessage): void
+    public function testSetDescription($parameter, $expectedMessage): void
     {
-        $reflector = new \ReflectionClass(TransactionTableModel::class);
+        $reflector = new \ReflectionClass(ItemModel::class);
         $instance  = $reflector->newInstanceWithoutConstructor();
-        $method    = $reflector->getMethod('setDate');
+        $method    = $reflector->getMethod('setDescription');
         $method->setAccessible(true);
         $this->expectExceptionMessage($expectedMessage);
         $method->invoke($instance, $parameter);
     }
 
-    public function dateProvider()
+    public function descriptionProvider()
     {
         return [
-            ['2020/01/01', 'Date has to be valid and can not be null'],
-            ['', 'Date has to be valid and can not be null'],
-            [-12, 'Date has to be valid and can not be null']
+            [null, 'Description is required']
         ];
     }
 
     /**
-     * @dataProvider dateWithoutExceptionProvider
+     * @dataProvider descriptionWithoutExceptionProvider
      *
      * @param $parameter
      * @param $expected
      * @throws Exception
      */
-    public function testSetDateWithoutException($parameter, $expected): void
+    public function testSetDescriptionWithoutException($parameter, $expected): void
     {
-        $reflector = new \ReflectionClass(TransactionTableModel::class);
+        $reflector = new \ReflectionClass(ItemModel::class);
         $instance  = $reflector->newInstanceWithoutConstructor();
-        $method    = $reflector->getMethod('setDate');
+        $method    = $reflector->getMethod('setDescription');
         $method->setAccessible(true);
 
         $this->assertEquals($expected, $method->invoke($instance, $parameter));
     }
 
-    public function dateWithoutExceptionProvider()
+    public function descriptionWithoutExceptionProvider()
     {
         return [
-            ['01/01/2020', '01/01/2020'],
-            ['15/01/2020', '15/01/2020'],
-            ['01/06/2020', '01/06/2020'],
-            ['03/07/2020', '03/07/2020']
+            ['test', 'test'],
+            ['Title', 'Title'],
+            [10, 10],
+            [100, 100]
         ];
     }
 
-    public function testGetDate(): void
+    public function testGetDescription(): void
     {
-        $mockedClass = $this->createMock(TransactionTableModel::class);
-        $mockedClass->method('getDate')
-            ->willReturn('01/01/2020');
-        $this->assertEquals('01/01/2020', $mockedClass->getDate());
+        $mockedClass = $this->createMock(ItemModel::class);
+        $mockedClass->method('getDescription')
+            ->willReturn('Test');
+        $this->assertEquals('Test', $mockedClass->getDescription());
     }
 
     /**
-     * @dataProvider valueProvider
+     * @dataProvider priceProvider
      *
      * @param $parameter
      * @param $expectedMessage
      * @throws ReflectionException
      */
-    public function testSetValue($parameter, $expectedMessage): void
+    public function testSetPrice($parameter, $expectedMessage): void
     {
-        $reflector = new \ReflectionClass(TransactionTableModel::class);
+        $reflector = new \ReflectionClass(ItemModel::class);
         $instance  = $reflector->newInstanceWithoutConstructor();
-        $method    = $reflector->getMethod('setValue');
+        $method    = $reflector->getMethod('setPrice');
         $method->setAccessible(true);
         $this->expectExceptionMessage($expectedMessage);
         $method->invoke($instance, $parameter);
     }
-    public function valueProvider()
+
+    public function priceProvider()
     {
         return [
-            [null, 'Value can not be null'],
-            ['abcdefg', 'Value needs to be a valid currency type']
+            [null, 'Price is required and needs to be a positive number'],
+            ['abcdefg', 'Price is required and needs to be a positive number'],
+            [-7, 'Price is required and needs to be a positive number'],
+            ['-12', 'Price is required and needs to be a positive number']
         ];
     }
 
-    public function testGetValue(): void
+    public function testGetPrice(): void
     {
-        $mockedClass = $this->createMock(TransactionTableModel::class);
-        $mockedClass->method('getValue')
+        $mockedClass = $this->createMock(ItemModel::class);
+        $mockedClass->method('getPrice')
             ->willReturn(1000);
-        $this->assertEquals(1000, $mockedClass->getValue());
+        $this->assertEquals(1000, $mockedClass->getPrice());
     }
 
-    public function testFetchTransactions(): void
+    /**
+     * @dataProvider discountProvider
+     *
+     * @param $parameter
+     * @param $expectedMessage
+     * @throws ReflectionException
+     */
+    public function testSetDiscount($parameter, $expectedMessage): void
     {
-        $mockedClass = $this->createMock(TransactionTableModel::class);
-        $mockedClass->method('fetchTransactions')
-            ->willReturn($this->returnedTransactionArray);
-        $this->assertEquals($this->returnedTransactionArray, $mockedClass->fetchTransactions());
+        $reflector = new \ReflectionClass(ItemModel::class);
+        $instance  = $reflector->newInstanceWithoutConstructor();
+        $method    = $reflector->getMethod('setDiscount');
+        $method->setAccessible(true);
+        $this->expectExceptionMessage($expectedMessage);
+        $method->invoke($instance, $parameter);
     }
 
-    public function testFetchTransactionsById(): void
+    public function discountProvider()
     {
-        $mockedClass = $this->createMock(TransactionTableModel::class);
-        $mockedClass->method('fetchTransactionByMerchantId')
-            ->willReturn($this->returnedTransactionArray);
-        $this->assertEquals($this->returnedTransactionArray, $mockedClass->fetchTransactionByMerchantId(1));
+        return [
+            [null, 'Discount is required']
+        ];
+    }
+
+    /**
+     * @dataProvider discountWithoutExceptionProvider
+     *
+     * @param $parameter
+     * @param $expected
+     * @throws Exception
+     */
+    public function testSetDiscountWithoutException($parameter, $expected): void
+    {
+        $reflector = new \ReflectionClass(ItemModel::class);
+        $instance  = $reflector->newInstanceWithoutConstructor();
+        $method    = $reflector->getMethod('setDiscount');
+        $method->setAccessible(true);
+
+        $this->assertEquals($expected, $method->invoke($instance, $parameter));
+    }
+
+    public function discountWithoutExceptionProvider()
+    {
+        return [
+            ['test', 'test'],
+            ['Title', 'Title'],
+            [10, 10],
+            [100, 100]
+        ];
+    }
+
+    public function testGetDiscount(): void
+    {
+        $mockedClass = $this->createMock(ItemModel::class);
+        $mockedClass->method('getDiscount')
+            ->willReturn('Test');
+        $this->assertEquals('Test', $mockedClass->getDiscount());
+    }
+
+    public function testFetchItems(): void
+    {
+        $mockedClass = $this->createMock(ItemModel::class);
+        $mockedClass->method('fetchItems')
+            ->willReturn(json_encode($this->returnedItemsArray));
+        $this->assertEquals(json_encode($this->returnedItemsArray), $mockedClass->fetchItems('https://videx.comesconnected.com/'));
     }
 }

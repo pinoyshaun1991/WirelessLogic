@@ -5,219 +5,179 @@ use Exception;
 use WL\Service\ContentService;
 
 /**
- * Class TransactionTable
- * @package Model
+ * Class ItemModel
+ * @package WL\Model
  */
 class ItemModel
 {
     /**
-     * @var int
+     * @var string
      */
-    private $merchant;
+    private $optionTitle;
 
     /**
      * @var string
      */
-    private $date;
+    private $description;
 
     /**
      * @var int
      */
-    private $value;
+    private $price;
 
     /**
      * @var string
      */
-    private $fileSource;
+    private $discount;
 
     /**
-     * @var array
+     * @var ContentService
      */
-    private $rows;
+    private $contentService;
 
     /**
-     * @var CurrencyWebservice
-     */
-    private $currencyService;
-
-    /**
-     * TransactionTable constructor.
-     * @throws Exception
+     * ItemModel constructor.
      */
     public function __construct()
     {
-        $this->merchant         = 0;
-        $this->date             = '';
-        $this->value            = 0;
-        $this->fileSource       = __DIR__.'/../../data/data.csv';
-        $this->rows             = array();
-        $this->currencyService  = new CurrencyWebserviceService();
+        $this->optionTitle    = '';
+        $this->description    = '';
+        $this->price          = 0;
+        $this->discount       = '';
+        $this->contentService = new ContentService();
     }
 
     /**
-     * Set the merchant variable type
+     * Set the option title variable type
      *
-     * @param $merchant
-     * @return int
+     * @param $optionTitle
+     * @return string
      * @throws Exception
      */
-    private function setMerchant($merchant): int
+    private function setOptionTitle($optionTitle): string
     {
-        if (is_null($merchant) || !is_numeric($merchant) || $merchant <= 0) {
-            throw new Exception('Merchant is required and needs to be a positive number');
+        if (is_null($optionTitle)) {
+            throw new Exception('Option title is required');
         }
 
-        return $this->merchant = addslashes($merchant);
+        return $this->optionTitle = $optionTitle;
     }
 
     /**
-     * Retrieve merchant id
-     *
-     * @return int
-     */
-    public function getMerchant(): int
-    {
-        return stripslashes($this->merchant);
-    }
-
-    /**
-     * Set the date variable type
-     *
-     * @param $date
-     * @return mixed
-     * @throws Exception
-     */
-    private function setDate($date): string
-    {
-        $dateSplit = explode('/', $date);
-
-        if (empty($date) || is_int($date) || checkdate($dateSplit[1], $dateSplit[0], $dateSplit[2]) === false) {
-            throw new Exception('Date has to be valid and can not be null');
-        }
-
-        return $this->date = $date;
-    }
-
-    /**
-     * Retrieve date
+     * Retrieve option title
      *
      * @return string
      */
-    public function getDate(): string
+    public function getOptionTitle(): string
     {
-        return $this->date;
+        return $this->optionTitle;
     }
 
     /**
-     * Set the value variable type
+     * Set the description variable type
      *
-     * @param $value
-     * @return mixed
+     * @param $description
+     * @return string
      * @throws Exception
      */
-    private function setValue($value): string
+    private function setDescription($description): string
     {
-        if (is_null($value)) {
-            throw new Exception('Value can not be null');
+        if (is_null($description)) {
+            throw new Exception('Description is required');
         }
 
-        $rawCurrency = filter_var($value, FILTER_SANITIZE_NUMBER_INT);
-
-        if ($this->isCurrency($rawCurrency) == false) {
-            throw new Exception('Value needs to be a valid currency type');
-        }
-
-        return $this->value = $this->currencyService->getExchangeRate($rawCurrency);
+        return $this->description = $description;
     }
 
     /**
-     * Retrieve value
+     * Retrieve description
      *
      * @return string
      */
-    public function getValue(): string
+    public function getDescription(): string
     {
-        return $this->value;
+        return $this->description;
     }
 
     /**
-     * Check a valid currency type
+     * Set the price variable type
      *
-     * @param $number
-     * @return false|int
-     */
-    private function isCurrency($number): int
-    {
-        return preg_match("/^-?[0-9]+(?:\.[0-9]{1,2})?$/", $number);
-    }
-
-    /**
-     * Fetch all transactions
-     *
-     * @return array
+     * @param $price
+     * @return int
      * @throws Exception
      */
-    public function fetchTransactions(): array
+    private function setPrice($price): int
     {
-        if (($handle = fopen($this->fileSource, "r")) !== false) {
-            $row = 0;
-            while (($data[] = fgetcsv($handle, 1000, ";")) !== false) {
-
-                if ($row > 0) {
-                    $this->setMerchant($data[$row][0]);
-                    $this->setDate($data[$row][1]);
-                    $this->setValue($data[$row][2]);
-
-                    $this->rows[] = array(
-                        'merchant' => $this->getMerchant(),
-                        'date'     => $this->getDate(),
-                        'value'    => $this->getValue()
-                    );
-                }
-
-                $row++;
-            }
+        if (is_null($price) || !is_numeric($price) || $price <= 0) {
+            throw new Exception('Price is required and needs to be a positive number');
         }
 
-        return $this->rows;
+        return $this->price = $price;
     }
 
     /**
-     * Fetch transaction row by merchant id
+     * Retrieve price
      *
-     * @param $merchant
-     * @return array
+     * @return int
+     */
+    public function getPrice(): int
+    {
+        return $this->price;
+    }
+
+    /**
+     * Set the discount variable type
+     *
+     * @param $discount
+     * @return string
      * @throws Exception
      */
-    public function fetchTransactionByMerchantId($merchant): array
+    private function setDiscount($discount): string
     {
-        $this->setMerchant($merchant);
-        $found = false;
-
-        if (($handle = fopen($this->fileSource, "r")) !== false) {
-            $row = 0;
-            while (($data[] = fgetcsv($handle, 1000, ";")) !== false) {
-
-                if (($row > 0 && $found === false) || !empty($this->rows)) {
-                    if ($data[$row][0] == $this->getMerchant()) {
-                        $this->rows[] = array(
-                            'merchant' => $data[$row][0],
-                            'date'     => $data[$row][1],
-                            'value'    => $this->setValue($data[$row][2])
-                        );
-
-                        $found = true;
-                    }
-                }
-
-                $row++;
-            }
-
-            if ($found === false) {
-                throw new Exception('Unable to find transaction');
-            }
+        if (is_null($discount)) {
+            throw new Exception('Discount is required');
         }
 
-        return $this->rows;
+        return $this->discount = $discount;
+    }
+
+    /**
+     * Retrieve discount
+     *
+     * @return string
+     */
+    public function getDiscount(): string
+    {
+        return $this->discount;
+    }
+
+    /**
+     * Fetch all items
+     *
+     * @param $site
+     * @return string
+     * @throws Exception
+     */
+    public function fetchItems($site): string
+    {
+        $dataArray = $this->contentService->getContent($site);
+        $result = array();
+
+        foreach ($dataArray as $data) {
+            $this->setOptionTitle($data['optionTitle']);
+            $this->setDescription($data['description']);
+            $this->setPrice(str_replace('£', '', $data['price']));
+            $this->setDiscount(isset($data['discount']) ? $data['discount'] : '');
+
+            $result[$this->getPrice()]['optionTitle'] = $this->getOptionTitle();
+            $result[$this->getPrice()]['description'] = $this->getDescription();
+            $result[$this->getPrice()]['price']       = $this->getPrice();
+            $result[$this->getPrice()]['discount']    = $this->getDiscount();
+        }
+
+        $data = json_encode(array_reverse($result));
+        echo $data;
+
+        return $data;
     }
 }

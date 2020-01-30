@@ -1,15 +1,16 @@
 {
-    "name": "awinTest",
-    "description": "Transaction Report",
+    "name": "wirelessLogicTest",
+    "description": "Scraped Items",
     "type": "PHP",
     "require": {
         "php": "7.3.*",
         "phpspec/phpspec": "~3.0",
-        "phplucidframe/console-table": "^1.2"
+        "phplucidframe/console-table": "^1.2",
+        "fabpot/goutte": "^4.0"
     },
     "autoload": {
         "psr-4": {
-            "Awin\\": "src/"
+            "WL\\": "src/"
         }
     },
     "require-dev": {

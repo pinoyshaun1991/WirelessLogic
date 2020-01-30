@@ -4,58 +4,50 @@ namespace WL\Controller;
 
 use WL\Common\Controller\ItemInterface;
 use Exception;
-use Awin\Model\TransactionTableModel;
+use WL\Model\ItemModel;
 
 /**
  * Implements the item interface
  *
- * Class Merchant
- * @package Controller
+ * Class ItemController
+ * @package WL\Controller
  */
 class ItemController implements ItemInterface
 {
-    private $transactionModel;
+    private $itemModel;
+    private $site;
 
-    public function __construct()
+    /**
+     * ItemController constructor.
+     * @param string $site
+     */
+    public function __construct($site = '')
     {
-        $this->transactionModel = new TransactionTableModel();
+        $this->itemModel = new ItemModel();
+        $this->site      = $site;
     }
 
     /**
-     * Fetch all transactions
+     * Fetch all items
      *
      * @return array|mixed
      * @throws \Exception
      */
-    public function getTransactions()
+    public function getItems()
     {
-        $transactions = array();
+        $items = array();
 
         try {
-            $transactions = $this->transactionModel->fetchTransactions();
+
+            if ($this->site === '') {
+                throw new Exception('Site is required');
+            }
+
+            $items = $this->itemModel->fetchItems($this->site);
         } catch (Exception $e) {
             print $e->getMessage();
         }
 
-        return $transactions;
-    }
-
-    /**
-     * Fetch merchant transactions
-     *
-     * @param $id
-     * @return array|mixed
-     */
-    public function getTransactionsByMerchant($id)
-    {
-        $merchantTransactions = array();
-
-        try {
-            $merchantTransactions = $this->transactionModel->fetchTransactionByMerchantId($id);
-        } catch (Exception $e) {
-            print $e->getMessage();
-        }
-
-        return $merchantTransactions;
+        return $items;
     }
 }

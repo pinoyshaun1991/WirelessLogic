@@ -1,14 +1,14 @@
 <?php
-namespace Awin\Model;
+namespace WL\Model;
 
 use Exception;
-use Awin\Service\CurrencyWebserviceService;
+use WL\Service\ContentService;
 
 /**
  * Class TransactionTable
  * @package Model
  */
-class TransactionTableModel
+class ItemModel
 {
     /**
      * @var int

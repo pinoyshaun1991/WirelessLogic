@@ -1,18 +1,18 @@
 <?php
 
-namespace Awin\Controller;
+namespace WL\Controller;
 
-use Awin\Common\Controller\TransactionInterface;
+use WL\Common\Controller\ItemInterface;
 use Exception;
 use Awin\Model\TransactionTableModel;
 
 /**
- * Implements the transaction interface
+ * Implements the item interface
  *
  * Class Merchant
  * @package Controller
  */
-class MerchantController implements TransactionInterface
+class ItemController implements ItemInterface
 {
     private $transactionModel;
 
